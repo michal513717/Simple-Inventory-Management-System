@@ -8,7 +8,10 @@ import express, { Application } from "express";
 import cors, { CorsOptions } from "cors";
 import bodyParser from "body-parser";
 import * as http from "http";
+import 'dotenv/config';
 
+import { closeMongoConnection, connectMongoDB } from "./database/mongoClient";
+import { connectElasticSearch } from "./database/elasticSearchClient";
 
 export class MainApp {
 
@@ -17,18 +20,26 @@ export class MainApp {
     private server!: HttpServer;
     private routes!: CommonRoutes[];
 
-    constructor() {
-        this.init();
-    }
+    static async createClassInstance() {
+        const mainApp = new MainApp();
+        await mainApp.init();
+        return mainApp;
+    }    
 
-    private init(): void {
+    private async init(): Promise<void> {
 
+        await this.initDatabases();
         this.initApplicationConfig();
         this.initApplicationAndServer();
         this.initBasicDebug();
         this.initRoutes();
         this.startServer();
         this.setupCloseListeners();
+    }
+
+    private async initDatabases(): Promise<void> {
+        await connectMongoDB();
+        await connectElasticSearch();
     }
 
     private initApplicationConfig(): void {
@@ -84,6 +95,7 @@ export class MainApp {
         for (const signal of APPLICATION_CONFIG.EXIT_SIGNALS) {
             process.on(signal as string, async () => {
                 console.info(`Cached signal ${signal}`)
+                await closeMongoConnection();
             })
         }
 
