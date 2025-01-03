@@ -32,7 +32,7 @@ export abstract class CommonRoutes {
         version
       });
   
-      this.configureRoute();
+      this.configureRoutes();
     }
   
     //To implements methods before configure routes
@@ -50,5 +50,5 @@ export abstract class CommonRoutes {
       return this.app;
     }
   
-    abstract configureRoute(): Application;
+    abstract configureRoutes(): Application;
 }

@@ -8,7 +8,7 @@ export class NotValidRoutes extends CommonRoutes {
     super(app, "Not Valid route", "0.0.1");
   }
 
-  public override configureRoute(): Application {
+  public override configureRoutes(): Application {
 
     this.app.all("*", async (req: Request, _res: Response, next: NextFunction) => {
       const err = new Error(`Route ${req.originalUrl} not found`) as Error & {
