@@ -5,7 +5,7 @@ export class ProductRepository {
     private ProductModel: Model<Product>;
 
     constructor() {
-        this.ProductModel = mongoose.model<Product>('Product', ProductSchema);
+        this.ProductModel = mongoose.model<Product>('Product', ProductSchema, 'products');
     }
 
     async create(product: Omit<Product, '_id'>): Promise<Product> {

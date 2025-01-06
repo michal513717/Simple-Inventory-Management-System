@@ -12,6 +12,7 @@ import { CreateProductCommand } from './commands/create-product.command';
 import { GetProductsQuery } from './queries/get-product.query';
 import { ProductController } from './controllers/product.controller';
 import { RestockProductCommand } from './commands/restock-product.command';
+import { SellProductCommand } from './commands/sell-product.command';
 
 dotenv.config();
 
@@ -39,8 +40,9 @@ async function main() {
         const productReadRepository = new ProductReadRepository(elasticSearchClient);
         const restockProductCommand = new RestockProductCommand(productRepository, productReadRepository);
         const createProductCommand = new CreateProductCommand(productRepository, productReadRepository);
+        const sellProductCommand = new SellProductCommand(productRepository, productReadRepository);
         const getProductsQuery = new GetProductsQuery(productReadRepository);
-        const productController = new ProductController(createProductCommand, getProductsQuery, restockProductCommand);
+        const productController = new ProductController(createProductCommand, getProductsQuery, restockProductCommand, sellProductCommand);
 
         if(APPLICATION_CONFIG.DEBUG_REQUEST === true){ 
             debugRequest(app);
@@ -50,6 +52,7 @@ async function main() {
         app.get('/products', productController.getProducts.bind(productController));
         
         app.post('/products/:id/restock', productController.restockProduct.bind(productController));
+        app.post('/products/:id/sell', productController.sellProduct.bind(productController));
 
         configureNotValidRoute(app);
 

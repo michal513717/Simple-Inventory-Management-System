@@ -5,7 +5,7 @@ const logger = log4js.getLogger("Database");
 
 export const getMongoClient = async (uri: string): Promise<typeof mongoose> => {
     try {
-        const client = await mongoose.connect(uri);       
+        const client = await mongoose.connect(uri, { dbName: process.env.MONGODB_DB_NAME });       
         logger.info("MongoDB connected")
 
         return client;
