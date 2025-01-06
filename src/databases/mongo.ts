@@ -1,8 +1,7 @@
-import { MongoClient, ServerApiVersion } from 'mongodb';
 import * as log4js from 'log4js';
 import mongoose from 'mongoose';
 
-const logger = log4js.getLogger("db");
+const logger = log4js.getLogger("Database");
 
 export const getMongoClient = async (uri: string): Promise<typeof mongoose> => {
     try {

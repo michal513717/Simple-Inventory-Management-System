@@ -2,7 +2,7 @@ import { Client as ElasticClient } from '@elastic/elasticsearch';
 import { BasicAuth } from '../models/common.models';
 import * as log4js from 'log4js';
 
-const logger = log4js.getLogger("db");
+const logger = log4js.getLogger("Database");
 
 export const getElasticSearchClient = async (cloudId: string, credentials: BasicAuth): Promise<ElasticClient> => {
     try {

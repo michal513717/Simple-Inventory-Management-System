@@ -5,8 +5,9 @@ export const configureLogger = () => {
         appenders: { out: { type: "stdout" }, file: { type: "file", filename: "logs/app.log" } },
         categories: {
             default: { appenders: ["out", "file"], level: "debug" },
-            http: { appenders: ["out", "file"], level: "info" },
-            db: { appenders: ["out", "file"], level: "debug" }
+            Main: { appenders: ["out", "file"], level: "info" },
+            Http: { appenders: ["out", "file"], level: "info" },
+            Database: { appenders: ["out", "file"], level: "debug" }
         },
     });
 }
