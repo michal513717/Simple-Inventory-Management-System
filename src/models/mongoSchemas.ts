@@ -1,15 +1,31 @@
 import { model, Model, Schema } from "mongoose";
+import { Document, Types } from 'mongoose';
 import mongoose from "mongoose";
 
-export const ProductSchema = new Schema({
-    name: {type: String, required: true},
-    description: {type: String, required: true, maxlength: 50},
-    price: {type: Number, required: true},
-    stock: {type: Number, required: true},
+export interface Product extends Document {
+    _id: Types.ObjectId;
+    name: string;
+    description: string;
+    price: number;
+    stock: number;
+}
+
+export const ProductSchema = new Schema<Product>({
+    name: { type: String, required: true },
+    description: { type: String, required: true, maxlength: 50 },
+    price: { type: Number, required: true },
+    stock: { type: Number, required: true }
 }, {
-    timestamps: true,
     versionKey: false
 });
+
+
+export const StockSchema = new Schema({
+    productId: { type: mongoose.Schema.Types.ObjectId, ref: 'Product', required: true },
+    quantity: { type: Number, required: true, min: 1 },
+}, {
+    versionKey: false
+})
 
 export const OrderSchema = new Schema({
     customerId: String,
@@ -22,7 +38,3 @@ export const OrderSchema = new Schema({
     timestamps: true,
     versionKey: false
 });
-
-export const OrderModel: Model<any> = model("orders", OrderSchema);
-
-export const ProductModel: Model<any> = model("products", ProductSchema);

@@ -6,6 +6,12 @@ import { getElasticSearchClient } from './databases/elasticSearch';
 import { configureLogger } from './utils/logger';
 import { configureNotValidRoute, debugRequest } from './utils/requests';
 import { APPLICATION_CONFIG } from './utils/applicationConfig';
+import { ProductRepository } from './repositories/product.repository';
+import { ProductReadRepository } from './repositories/product-read.repository';
+import { CreateProductCommand } from './commands/create-product.command';
+import { GetProductsQuery } from './queries/get-product.query';
+import { ProductController } from './controllers/product.controller';
+import { RestockProductCommand } from './commands/restock-product.command';
 
 dotenv.config();
 
@@ -20,6 +26,8 @@ const elasticSearchApiKey = process.env.ELASTICSEARCH_API_KEY || '';
 async function main() {
     configureLogger();
 
+    app.use(express.json());
+
     const logger = log4js.getLogger("Main");
 
     try {
@@ -27,11 +35,23 @@ async function main() {
 
         const mongoClient = await getMongoClient(mongoUri);
 
-        configureNotValidRoute(app);
+        const productRepository = new ProductRepository();
+        const productReadRepository = new ProductReadRepository(elasticSearchClient);
+        const restockProductCommand = new RestockProductCommand(productRepository, productReadRepository);
+        const createProductCommand = new CreateProductCommand(productRepository, productReadRepository);
+        const getProductsQuery = new GetProductsQuery(productReadRepository);
+        const productController = new ProductController(createProductCommand, getProductsQuery, restockProductCommand);
 
         if(APPLICATION_CONFIG.DEBUG_REQUEST === true){ 
             debugRequest(app);
         }
+
+        app.post('/products', productController.createProduct.bind(productController));
+        app.get('/products', productController.getProducts.bind(productController));
+        
+        app.post('/products/:id/restock', productController.restockProduct.bind(productController));
+
+        configureNotValidRoute(app);
 
         app.listen(port, () => {
             logger.log(`Server is running on port ${port}`);
