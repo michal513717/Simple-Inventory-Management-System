@@ -12,7 +12,14 @@ import { CreateProductCommand } from './commands/create-product.command';
 import { GetProductsQuery } from './queries/get-product.query';
 import { ProductController } from './controllers/product.controller';
 import { RestockProductCommand } from './commands/restock-product.command';
+import { SellProductCommandHandler } from './commands/sell-product.handler';
+import { commandDispatchManager } from './managers/commandDispatchManager';
+import { CreateOrderCommandHandler } from './commands/create-order.handler';
+import { OrderRepository } from './repositories/order.repository';
+import { RestockProductCommandHandler } from './commands/restock-product.handler';
 import { SellProductCommand } from './commands/sell-product.command';
+import { CreateOrderCommand } from './commands/create-order.command';
+import { OrderController } from './controllers/order.controller';
 
 dotenv.config();
 
@@ -37,12 +44,23 @@ async function main() {
         const mongoClient = await getMongoClient(mongoUri);
 
         const productRepository = new ProductRepository();
+        const orderRepository = new OrderRepository();
         const productReadRepository = new ProductReadRepository(elasticSearchClient);
-        const restockProductCommand = new RestockProductCommand(productRepository, productReadRepository);
-        const createProductCommand = new CreateProductCommand(productRepository, productReadRepository);
-        const sellProductCommand = new SellProductCommand(productRepository, productReadRepository);
+
         const getProductsQuery = new GetProductsQuery(productReadRepository);
-        const productController = new ProductController(createProductCommand, getProductsQuery, restockProductCommand, sellProductCommand);
+        
+        const createProductCommand = new CreateProductCommand(productRepository, productReadRepository);
+        
+        const sellProductCommandHandler = new SellProductCommandHandler(productRepository);
+        const createOrderCommandHandler = new CreateOrderCommandHandler(productRepository, orderRepository);
+        const restockProductCommandHandler = new RestockProductCommandHandler(productRepository);
+
+        const orderController = new OrderController();
+        const productController = new ProductController(createProductCommand, getProductsQuery);
+
+        commandDispatchManager.registerHandler(RestockProductCommand.name, restockProductCommandHandler);
+        commandDispatchManager.registerHandler(SellProductCommand.name, sellProductCommandHandler);
+        commandDispatchManager.registerHandler(CreateOrderCommand.name, createOrderCommandHandler);
 
         if(APPLICATION_CONFIG.DEBUG_REQUEST === true){ 
             debugRequest(app);
@@ -53,6 +71,8 @@ async function main() {
         
         app.post('/products/:id/restock', productController.restockProduct.bind(productController));
         app.post('/products/:id/sell', productController.sellProduct.bind(productController));
+
+        app.post('/createOrder', orderController.createOrder.bind(orderController));
 
         configureNotValidRoute(app);
 

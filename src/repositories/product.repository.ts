@@ -1,25 +1,24 @@
-import mongoose, { Model } from "mongoose";
+import mongoose, { Model, ClientSession } from "mongoose";
 import { Product, ProductSchema } from "../models/mongoSchemas";
 
 export class ProductRepository {
-    private ProductModel: Model<Product>;
+    private productModel: Model<Product>;
 
     constructor() {
-        this.ProductModel = mongoose.model<Product>('Product', ProductSchema, 'products');
+        this.productModel = mongoose.model<Product>('Product', ProductSchema, 'products');
     }
 
-    async create(product: Omit<Product, '_id'>): Promise<Product> {
-        return this.ProductModel.create(product);
+    public async create(product: Omit<Product, '_id'>): Promise<Product> {
+        return this.productModel.create(product);
     }
 
-    async findById(id: string): Promise<Product | null> {
-        return this.ProductModel.findById(id).exec();
+    public async findById(id: string): Promise<Product | null> {
+        return this.productModel.findById(id);
     }
 
-    async update(id: string, product: Partial<Omit<Product, '_id'>>): Promise<Product | null> {
-        return this.ProductModel.findByIdAndUpdate(id, product, { new: true }).exec();
-    }
-    async delete(id: string): Promise<Product | null> {
-        return this.ProductModel.findByIdAndDelete(id).exec();
+    async update(product: Product, session?: ClientSession): Promise<Product | null> {
+        return session
+            ? this.productModel.findByIdAndUpdate(product._id, product, { new: true, session })
+            : this.productModel.findByIdAndUpdate(product._id, product, { new: true });
     }
 }
