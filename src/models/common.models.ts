@@ -12,3 +12,10 @@ export interface Command {};
 export interface CommandHandler<T extends Command>{
     handle(command: T): Promise<void>;
 };
+export enum ResponseStatus {
+    FAILED,
+    SUCCESS
+}
+export enum ERROR_CODES {
+    INTERNAL_SERVER_ERROR
+}
