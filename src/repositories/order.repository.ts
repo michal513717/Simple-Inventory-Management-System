@@ -1,7 +1,6 @@
 import mongoose, { Model, ClientSession } from "mongoose";
 import { OrderSchema, Order } from "../models/mongoSchemas";
 
-
 export class OrderRepository {
 
     private orderModel: Model<Order>;

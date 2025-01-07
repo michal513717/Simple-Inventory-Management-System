@@ -12,7 +12,7 @@ export const getElasticSearchClient = async (cloudId: string, credentials: Basic
             auth: { apiKey: credentials }
         });
 
-        logger.info("ElasticSearch connected")
+        logger.info("ElasticSearch connected");
         return elasticSearchClient;
     } catch (error) {
         logger.error("ElasticSearch connection failed");

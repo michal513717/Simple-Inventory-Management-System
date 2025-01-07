@@ -1,26 +1,36 @@
 import { Request, Response } from 'express';
 import { CreateOrderCommand } from '../commands/create-order.command';
 import { commandDispatchManager } from '../managers/commandDispatchManager';
+import { internalServerErrorResponse, validationErrorResponse } from '../utils/responses';
+import { createOrderValidator } from '../utils/validators';
+import { validationResult } from 'express-validator';
+import { ErrorWithCode, ValidationError } from '../utils/errorsWithCode';
 
 export class OrderController {
     constructor() { }
 
-    async createOrder(req: Request, res: Response): Promise<void> {
+    async createOrder(req: Request, res: Response) {
         try {
-            //TODO validate and add custom errors
-            const command: CreateOrderCommand = {
-                customerId: req.body.customerId,
-                products: req.body.products,
-            };
+            await Promise.all(createOrderValidator.map(validation => validation.run(req)));
+
+            if (validationResult(req).isEmpty() === false) {
+                throw new ValidationError();
+            }
+
             await commandDispatchManager.dispatch(new CreateOrderCommand(req.body.customerId, req.body.products));
 
-            res.status(201).send({ message: 'Order created successfully' })
+            res.status(201).send({ message: 'Order created successfully' });
         } catch (error) {
-            console.error(error);
-            res.status(500).send({ error: 'Failed to create order' });
+
+            if (validationResult(req).isEmpty() === false) {
+                return validationErrorResponse(res, validationResult(req).array());
+            }
+
+            if(error instanceof ErrorWithCode){
+                return res.status(error.status).json(error.toJSON());
+            }
+
+            internalServerErrorResponse(res);
         }
     }
 }
-
-
-

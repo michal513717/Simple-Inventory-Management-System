@@ -20,6 +20,8 @@ import { RestockProductCommandHandler } from './commands/restock-product.handler
 import { SellProductCommand } from './commands/sell-product.command';
 import { CreateOrderCommand } from './commands/create-order.command';
 import { OrderController } from './controllers/order.controller';
+import { EventStore } from './databases/eventStore';
+import { newProductValidator } from './utils/validators';
 
 dotenv.config();
 
@@ -39,9 +41,12 @@ async function main() {
     const logger = log4js.getLogger("Main");
 
     try {
-        const elasticSearchClient = await getElasticSearchClient(elasticSearchCloudId, { id: elasticSearchId, api_key: elasticSearchApiKey });
+        const elasticSearchClient = await getElasticSearchClient(elasticSearchCloudId, { 
+            id: elasticSearchId, api_key: elasticSearchApiKey 
+        });
 
         const mongoClient = await getMongoClient(mongoUri);
+        const eventStore = new EventStore('events.json');
 
         const productRepository = new ProductRepository();
         const orderRepository = new OrderRepository();
@@ -49,11 +54,11 @@ async function main() {
 
         const getProductsQuery = new GetProductsQuery(productReadRepository);
         
-        const createProductCommand = new CreateProductCommand(productRepository, productReadRepository);
+        const createProductCommand = new CreateProductCommand(productRepository, productReadRepository, eventStore);
         
-        const sellProductCommandHandler = new SellProductCommandHandler(productRepository);
-        const createOrderCommandHandler = new CreateOrderCommandHandler(productRepository, orderRepository);
-        const restockProductCommandHandler = new RestockProductCommandHandler(productRepository);
+        const sellProductCommandHandler = new SellProductCommandHandler(productRepository, eventStore);
+        const createOrderCommandHandler = new CreateOrderCommandHandler(productRepository, orderRepository, eventStore);
+        const restockProductCommandHandler = new RestockProductCommandHandler(productRepository, eventStore);
 
         const orderController = new OrderController();
         const productController = new ProductController(createProductCommand, getProductsQuery);

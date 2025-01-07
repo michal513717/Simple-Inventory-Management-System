@@ -3,26 +3,32 @@ import { ProductRepository } from '../repositories/product.repository';
 import { OrderRepository } from '../repositories/order.repository';
 import mongoose from 'mongoose';
 import { CreateOrderCommand } from './create-order.command';
+import { InsufficientStockError, ProductNotFoundError } from '../utils/errorsWithCode';
+import { EventStore } from '../databases/eventStore';
+import { EventsCreator } from '../utils/events';
+import { OrderCreatedEvent } from '../models/common.models';
 
 export class CreateOrderCommandHandler {
     constructor(
         private productRepository: ProductRepository,
-        private orderRepository: OrderRepository
+        private orderRepository: OrderRepository,
+        private eventStore: EventStore
     ) { }
 
     async handle(command: CreateOrderCommand): Promise<void> {
         const session = await mongoose.startSession();
+        const event = new EventsCreator<OrderCreatedEvent>("OrderCreated", command).create();
         session.startTransaction();
         try {
             for (const productInfo of command.products) {
                 const product = await this.productRepository.findById(productInfo.productId);
-                //TODO custom errors
+                
                 if (!product) {
-                    throw new Error(`Product ${productInfo.productId} not found`);
+                    throw new ProductNotFoundError();
                 }
 
                 if (product.stock < productInfo.quantity) {
-                    throw new Error(`Insufficient stock for product ${productInfo.productId}`);//TODO add cusotm errors
+                    throw new InsufficientStockError();
                 }
 
                 product.stock -= productInfo.quantity;
@@ -43,8 +49,11 @@ export class CreateOrderCommandHandler {
             session.endSession();
         } catch (error) {
             await session.abortTransaction();
-            session.endSession();
+            event.status = "FAILED";
             throw error;
+        } finally {
+            session.endSession();
+            this.eventStore.append(event);
         }
     }
 }
