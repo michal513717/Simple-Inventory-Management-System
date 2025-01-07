@@ -10,7 +10,8 @@ import { EventsCreator } from "../utils/events";
 export class RestockProductCommandHandler {
     constructor(
         private productRepository: ProductRepository,
-        private eventStore: EventStore
+        private eventStore: EventStore,
+        private productReadRepository: ProductReadRepository
     ) { }
 
     public async handle(command: RestockProductCommand): Promise<void> {
@@ -31,6 +32,8 @@ export class RestockProductCommandHandler {
             product.stock += command.quantity;
 
             const updatedProduct = await this.productRepository.update(product, session);
+
+            this.productReadRepository.updateStock(product._id.toString(), product.stock);
 
             if (!updatedProduct) {
                 throw new Error("Could not update product")//TODO add cusotm errors

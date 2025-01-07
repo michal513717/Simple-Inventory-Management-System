@@ -10,6 +10,9 @@ export class ProductReadRepository {
 
     constructor(client: Client) {
         this.client = client;
+        // this.client.deleteByQuery({ //! Celan up function
+        //     index: 'products', query: { "match_all": {} }
+        // })
     }
 
     async index(product: Product): Promise<any> {
@@ -28,6 +31,27 @@ export class ProductReadRepository {
         } catch (error) {
             logger.error("Error while indexing the product in Elasticsearch: ", error);
             return null;
+        }
+    }
+
+    async updateStock(productId: string, newStock: number): Promise<boolean> {
+        try {
+            const updateResponse = await this.client.update({
+                index: 'products',
+                id: productId,
+                body: {
+                    script: {
+                        source: 'ctx._source.stock = params.newStock', // Update script using painless
+                        params: {
+                            newStock,
+                        },
+                    },
+                },
+            });
+            return updateResponse.result === 'updated';
+        } catch (error) {
+            logger.error("Error updating product stock in Elasticsearch:", error);
+            return false;
         }
     }
 

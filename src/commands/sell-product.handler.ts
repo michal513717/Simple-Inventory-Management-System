@@ -1,5 +1,6 @@
 import { EventStore } from '../databases/eventStore';
 import { ProductSoldEvent } from '../models/common.models';
+import { ProductReadRepository } from '../repositories/product-read.repository';
 import { ProductRepository } from '../repositories/product.repository';
 import { InsufficientStockError, ProductNotFoundError } from '../utils/errorsWithCode';
 import { EventsCreator } from '../utils/events';
@@ -9,7 +10,8 @@ import mongoose from 'mongoose';
 export class SellProductCommandHandler {
     constructor(
         private productRepository: ProductRepository,
-        private eventStore: EventStore
+        private eventStore: EventStore,
+        private productReadRepository: ProductReadRepository
     ) { }
 
     public async handle(command: SellProductCommand): Promise<void> {
@@ -34,6 +36,8 @@ export class SellProductCommandHandler {
             product.stock -= command.quantity;
 
             await this.productRepository.update(product, session);
+            
+            this.productReadRepository.updateStock(product._id.toString(), product.stock);
 
             await session.commitTransaction();
         } catch (error) {

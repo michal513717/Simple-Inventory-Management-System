@@ -56,9 +56,9 @@ async function main() {
         
         const createProductCommand = new CreateProductCommand(productRepository, productReadRepository, eventStore);
         
-        const sellProductCommandHandler = new SellProductCommandHandler(productRepository, eventStore);
-        const createOrderCommandHandler = new CreateOrderCommandHandler(productRepository, orderRepository, eventStore);
-        const restockProductCommandHandler = new RestockProductCommandHandler(productRepository, eventStore);
+        const sellProductCommandHandler = new SellProductCommandHandler(productRepository, eventStore, productReadRepository);
+        const createOrderCommandHandler = new CreateOrderCommandHandler(productRepository, orderRepository, eventStore, productReadRepository);
+        const restockProductCommandHandler = new RestockProductCommandHandler(productRepository, eventStore, productReadRepository);
 
         const orderController = new OrderController();
         const productController = new ProductController(createProductCommand, getProductsQuery);

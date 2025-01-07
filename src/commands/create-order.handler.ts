@@ -7,12 +7,14 @@ import { InsufficientStockError, ProductNotFoundError } from '../utils/errorsWit
 import { EventStore } from '../databases/eventStore';
 import { EventsCreator } from '../utils/events';
 import { OrderCreatedEvent } from '../models/common.models';
+import { ProductReadRepository } from '../repositories/product-read.repository';
 
 export class CreateOrderCommandHandler {
     constructor(
         private productRepository: ProductRepository,
         private orderRepository: OrderRepository,
-        private eventStore: EventStore
+        private eventStore: EventStore,
+        private productReadRepository: ProductReadRepository
     ) { }
 
     async handle(command: CreateOrderCommand): Promise<void> {
@@ -20,6 +22,7 @@ export class CreateOrderCommandHandler {
         const event = new EventsCreator<OrderCreatedEvent>("OrderCreated", command).create();
         session.startTransaction();
         try {
+            const productsToDecrease = [];
             for (const productInfo of command.products) {
                 const product = await this.productRepository.findById(productInfo.productId);
                 
@@ -32,6 +35,9 @@ export class CreateOrderCommandHandler {
                 }
 
                 product.stock -= productInfo.quantity;
+
+                productsToDecrease.push({ id: product._id.toString(), quantity: product.stock });
+
                 await this.productRepository.update(product, session);
             }
 
@@ -44,6 +50,10 @@ export class CreateOrderCommandHandler {
             }
 
             await this.orderRepository.create(orderData, session);
+
+            for(const productInfo of productsToDecrease){
+                this.productReadRepository.updateStock(productInfo.id, productInfo.quantity);
+            }
 
             await session.commitTransaction();
             session.endSession();
