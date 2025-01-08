@@ -4,6 +4,15 @@ import * as log4js from 'log4js';
 
 const logger = log4js.getLogger("http");
 
+/**
+ * @fileOverview Middleware and Route Configuration - Contains middleware for logging requests and handling invalid routes.
+ * 
+ * @author Michał Kuś
+ * @module MiddlewareAndRouteConfig
+ * @exports debugRequest - Middleware for logging HTTP requests
+ * @exports configureNotValidRoute - Endpoint for handling invalid routes and errors
+ */
+
 export const debugRequest = async (application: Application) => {
 
     application.use((req, res, next) => {

@@ -9,6 +9,15 @@ import { validationResult } from 'express-validator';
 import { newProductValidator, restockProductValidator, sellProductValidator } from '../utils/validators';
 import { ErrorWithCode, ValidationError } from '../utils/errorsWithCode';
 
+/**
+ * @fileOverview ProductController - Handles product-related operations including creation, restocking, selling, and fetching products.
+ * 
+ * @author Michał Kuś
+ * @class
+ * @param {CreateProductCommand} createProductCommand - Command for creating a product
+ * @param {GetProductsQuery} getProductsQuery - Query for fetching products
+ */
+
 export class ProductController {
     constructor(
         private createProductCommand: CreateProductCommand,
@@ -52,7 +61,7 @@ export class ProductController {
             const { id } = req.params;
 
             await commandDispatchManager.dispatch(new RestockProductCommand(id, quantity));
-            res.status(200).send({ result: { message: "Item restocked" }});
+            res.status(200).send({ result: { message: "Item restocked" } });
         } catch (error: any) {
 
             if (validationResult(req).isEmpty() === false) {
@@ -79,7 +88,7 @@ export class ProductController {
             const { id } = req.params;
 
             await commandDispatchManager.dispatch(new SellProductCommand(id, quantity));
-            res.status(200).send({ result: { message: "Item sold" }});
+            res.status(200).send({ result: { message: "Item sold" } });
         } catch (error: any) {
 
             if (validationResult(req).isEmpty() === false) {

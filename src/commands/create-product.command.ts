@@ -6,6 +6,16 @@ import { EventStore } from '../databases/eventStore';
 import { EventsCreator } from '../utils/events';
 import { ProductCreatedEvent } from '../models/common.models';
 
+/**
+ * @fileOverview CreateProductCommand - Handles the creation of new products, indexing them, and logging events.
+ * 
+ * @author Michał Kuś
+ * @class
+ * @param {ProductRepository} productRepository - Repository for managing products
+ * @param {ProductReadRepository} productReadRepository - Read repository for managing product stock levels
+ * @param {EventStore} eventStore - Event store for logging events
+ */
+
 const logger = log4js.getLogger();
 
 export class CreateProductCommand {

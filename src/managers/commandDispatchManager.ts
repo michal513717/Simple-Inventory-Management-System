@@ -1,5 +1,12 @@
 import { Command, CommandHandler } from "../models/common.models";
 
+/**
+ * @fileOverview CommandDispatchManager - Manages registration and dispatching of command handlers.
+ * 
+ * @author Michał Kuś
+ * @class
+ */
+
 class CommandDispatchManager {
     private handlers = new Map<string, CommandHandler<Command>>();
 

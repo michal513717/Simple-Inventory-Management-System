@@ -3,6 +3,14 @@ import { ObjectId } from 'mongodb';
 import { Product } from '../models/mongoSchemas';
 import * as log4js from 'log4js';
 
+/**
+ * @fileOverview ProductReadRepository - Handles operations related to reading product data, indexing, updating stock, and fetching all products from Elasticsearch.
+ * 
+ * @author Michał Kuś
+ * @class
+ * @param {Client} client - Elasticsearch client for database operations
+ */
+
 const logger = log4js.getLogger();
 
 export class ProductReadRepository {
@@ -10,9 +18,6 @@ export class ProductReadRepository {
 
     constructor(client: Client) {
         this.client = client;
-        // this.client.deleteByQuery({ //! Celan up function
-        //     index: 'products', query: { "match_all": {} }
-        // })
     }
 
     async index(product: Product): Promise<any> {

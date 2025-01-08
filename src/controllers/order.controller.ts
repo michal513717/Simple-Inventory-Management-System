@@ -6,6 +6,13 @@ import { createOrderValidator } from '../utils/validators';
 import { validationResult } from 'express-validator';
 import { ErrorWithCode, ValidationError } from '../utils/errorsWithCode';
 
+/**
+ * @fileOverview OrderController - Manages the creation of orders, validates request data, and handles error responses.
+ * 
+ * @author Michał Kuś
+ * @class
+ */
+
 export class OrderController {
     constructor() { }
 

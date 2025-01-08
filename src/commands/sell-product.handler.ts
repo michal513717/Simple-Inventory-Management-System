@@ -7,6 +7,16 @@ import { EventsCreator } from '../utils/events';
 import { SellProductCommand } from './sell-product.command';
 import mongoose from 'mongoose';
 
+/**
+ * @fileOverview SellProductCommandHandler - Handles the selling of products, managing stock levels, and logging events.
+ * 
+ * @author Michał Kuś
+ * @class
+ * @param {ProductRepository} productRepository - Repository for managing products
+ * @param {EventStore} eventStore - Event store for logging events
+ * @param {ProductReadRepository} productReadRepository - Read repository for managing product stock levels
+ */
+
 export class SellProductCommandHandler {
     constructor(
         private productRepository: ProductRepository,

@@ -1,6 +1,14 @@
 import mongoose, { Model, ClientSession } from "mongoose";
 import { Product, ProductSchema } from "../models/mongoSchemas";
 
+/**
+ * @fileOverview ProductRepository - Handles CRUD operations for products in the database.
+ * 
+ * @author Michał Kuś
+ * @class
+ * @param {Model<Product>} productModel - Model representing the product schema
+ */
+
 export class ProductRepository {
     private productModel: Model<Product>;
 

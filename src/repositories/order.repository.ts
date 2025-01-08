@@ -1,6 +1,14 @@
 import mongoose, { Model, ClientSession } from "mongoose";
 import { OrderSchema, Order } from "../models/mongoSchemas";
 
+/**
+ * @fileOverview OrderRepository - Handles CRUD operations for orders in the database.
+ * 
+ * @author Michał Kuś
+ * @class
+ * @param {Model<Order>} orderModel - Model representing the order schema
+ */
+
 export class OrderRepository {
 
     private orderModel: Model<Order>;

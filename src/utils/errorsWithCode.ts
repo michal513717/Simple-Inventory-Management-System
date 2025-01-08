@@ -1,5 +1,15 @@
 import { ERROR_CODES, ResponseStatus } from "../models/common.models";
 
+/**
+ * @fileOverview Error Classes - Defines custom error classes with specific error codes and response statuses.
+ * 
+ * @author Michał Kuś
+ * @class
+ * @param {string} message - Error message
+ * @param {number} status - HTTP status code
+ * @param {ERROR_CODES} code - Custom error code
+ */
+
 export abstract class ErrorWithCode extends Error {
     constructor(message: string, public status: number, public code: ERROR_CODES) {
         super(message);

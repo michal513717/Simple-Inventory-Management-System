@@ -4,6 +4,15 @@ import { EventStoreData, ProductEvent } from '../models/common.models';
 import { join } from 'path';
 import * as log4js from 'log4js';
 
+/**
+ * @fileOverview EventStore - Manages storing and retrieving events, initializing the event store, and logging events.
+ * 
+ * @author Michał Kuś
+ * @class
+ * @param {string} filename - The name of the file to store events
+ * @param {string} [dataDir='data'] - The directory where the file will be stored
+ */
+
 const logger = log4js.getLogger();
 
 export class EventStore {

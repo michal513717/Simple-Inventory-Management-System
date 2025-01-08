@@ -7,6 +7,16 @@ import { EventStore } from "../databases/eventStore";
 import { ProductRestockedEvent } from "../models/common.models";
 import { EventsCreator } from "../utils/events";
 
+/**
+ * @fileOverview RestockProductCommandHandler - Handles restocking products, managing stock levels, and logging events.
+ * 
+ * @author Michał Kuś
+ * @class
+ * @param {ProductRepository} productRepository - Repository for managing products
+ * @param {EventStore} eventStore - Event store for logging events
+ * @param {ProductReadRepository} productReadRepository - Read repository for managing product stock levels
+ */
+
 export class RestockProductCommandHandler {
     constructor(
         private productRepository: ProductRepository,

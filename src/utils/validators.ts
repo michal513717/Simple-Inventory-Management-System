@@ -1,5 +1,16 @@
 import { body, param } from 'express-validator';
 
+/**
+ * @fileOverview Validators - Contains validation rules for product and order-related operations.
+ * 
+ * @author Michał Kuś
+ * @module Validators
+ * @exports newProductValidator - Validation rules for creating a new product
+ * @exports restockProductValidator - Validation rules for restocking a product
+ * @exports sellProductValidator - Validation rules for selling a product
+ * @exports createOrderValidator - Validation rules for creating an order
+ */
+
 export const newProductValidator = [
     body('name')
         .notEmpty().withMessage('Name cannot be empty.')
