@@ -17,9 +17,11 @@ export abstract class ErrorWithCode extends Error {
 
     public toJSON() {
         return {
-            status: ResponseStatus.FAILED,
-            message: this.message,
-            code: this.code
+            result: {
+                status: ResponseStatus.FAILED,
+                message: this.message,
+                code: this.code
+            }
         }
     }
 };
