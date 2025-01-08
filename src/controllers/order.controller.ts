@@ -5,6 +5,7 @@ import { internalServerErrorResponse, validationErrorResponse } from '../utils/r
 import { createOrderValidator } from '../utils/validators';
 import { validationResult } from 'express-validator';
 import { ErrorWithCode, ValidationError } from '../utils/errorsWithCode';
+import { ERROR_CODES } from '../models/common.models';
 
 /**
  * @fileOverview OrderController - Manages the creation of orders, validates request data, and handles error responses.
@@ -28,7 +29,6 @@ export class OrderController {
 
             res.status(201).send({ result: { message: 'Order created successfully' }});
         } catch (error) {
-
             if (validationResult(req).isEmpty() === false) {
                 return validationErrorResponse(res, validationResult(req).array());
             }

@@ -26,7 +26,7 @@ export abstract class ErrorWithCode extends Error {
 
 export class ProductNotFoundError extends ErrorWithCode {
     constructor(){
-        super("Product not found", 204, ERROR_CODES.PRODUCT_NOT_FOUND);
+        super("Product not found", 403, ERROR_CODES.PRODUCT_NOT_FOUND); //ALSO can be 204, but 204 doesn't have json field
     }
 };
 
