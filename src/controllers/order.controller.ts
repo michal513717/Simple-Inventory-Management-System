@@ -19,7 +19,7 @@ export class OrderController {
 
             await commandDispatchManager.dispatch(new CreateOrderCommand(req.body.customerId, req.body.products));
 
-            res.status(201).send({ message: 'Order created successfully' });
+            res.status(201).send({ result: { message: 'Order created successfully' }});
         } catch (error) {
 
             if (validationResult(req).isEmpty() === false) {

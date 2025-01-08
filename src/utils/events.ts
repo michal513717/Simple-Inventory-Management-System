@@ -12,6 +12,7 @@ export class EventsCreator<T extends ProductEvent> {
     create(): T {
         return {
             type: this.type,
+            error: null,
             timestamp: new Date(),
             ...this.data,
             status: "SUCCESS"

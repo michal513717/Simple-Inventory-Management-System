@@ -29,6 +29,7 @@ export type ProductRestockedEvent = {
     quantity: number;
     status: "FAILED" | "SUCCESS";
     timestamp: Date;
+    error?: null | unknown;
 };
 export type ProductSoldEvent = {
     type: 'ProductSold';
@@ -36,6 +37,7 @@ export type ProductSoldEvent = {
     quantity: number;
     status: "FAILED" | "SUCCESS";
     timestamp: Date;
+    error?: null | unknown;
 };
 export type ProductCreatedEvent = {
     type: 'ProductCreated';
@@ -46,6 +48,7 @@ export type ProductCreatedEvent = {
     stock: number;
     status: "FAILED" | "SUCCESS";
     timestamp: Date;
+    error?: null | unknown;
 };
 export type OrderCreatedEvent = {
     type: 'OrderCreated';
@@ -56,6 +59,7 @@ export type OrderCreatedEvent = {
     }>;
     status: "FAILED" | "SUCCESS";
     timestamp: Date;
+    error?: null | unknown;
 };
 
 export type EventStoreData = { events: ProductEvent[]}

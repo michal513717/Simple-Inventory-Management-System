@@ -22,7 +22,7 @@ export class ProductNotFoundError extends ErrorWithCode {
 
 export class InsufficientStockError extends ErrorWithCode {
     constructor(){
-        super("Insufficient stock", 404, ERROR_CODES.PRODUCT_NOT_FOUND);
+        super("Insufficient stock", 404, ERROR_CODES.INSUFFICIENT_STOCK);
     }
 };
 

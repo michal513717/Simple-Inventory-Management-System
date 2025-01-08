@@ -60,6 +60,7 @@ export class CreateOrderCommandHandler {
         } catch (error) {
             await session.abortTransaction();
             event.status = "FAILED";
+            event.error = error;
             throw error;
         } finally {
             session.endSession();

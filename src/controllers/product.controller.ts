@@ -24,7 +24,7 @@ export class ProductController {
             }
 
             const product = await this.createProductCommand.execute(req.body);
-            res.status(201).json(product);
+            res.status(201).json({ result: { message: "Success", product } });
         } catch (error: any) {
 
             if (validationResult(req).isEmpty() === false) {
@@ -52,7 +52,7 @@ export class ProductController {
             const { id } = req.params;
 
             await commandDispatchManager.dispatch(new RestockProductCommand(id, quantity));
-            res.status(200).send();
+            res.status(200).send({ result: { message: "Item restocked" }});
         } catch (error: any) {
 
             if (validationResult(req).isEmpty() === false) {
@@ -79,7 +79,7 @@ export class ProductController {
             const { id } = req.params;
 
             await commandDispatchManager.dispatch(new SellProductCommand(id, quantity));
-            res.status(200).send();
+            res.status(200).send({ result: { message: "Item sold" }});
         } catch (error: any) {
 
             if (validationResult(req).isEmpty() === false) {
@@ -96,6 +96,6 @@ export class ProductController {
 
     async getProducts(req: Request, res: Response) {
         const products = await this.getProductsQuery.execute();
-        res.json(products);
+        res.status(200).send({ result: { message: "Success", products } });
     }
 }

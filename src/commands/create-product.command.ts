@@ -36,6 +36,7 @@ export class CreateProductCommand {
         } catch (error) {
             logger.error("Error during creating product:", error);
             event.status = "FAILED";
+            event.error = error;
             throw error;
         } finally {
             this.eventStore.append(event);
