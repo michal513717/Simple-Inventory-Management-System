@@ -31,13 +31,9 @@ export class RestockProductCommandHandler {
 
             product.stock += command.quantity;
 
-            const updatedProduct = await this.productRepository.update(product, session);
+            await this.productRepository.update(product, session);
 
             this.productReadRepository.updateStock(product._id.toString(), product.stock);
-
-            if (!updatedProduct) {
-                throw new Error("Could not update product")//TODO add cusotm errors
-            }
 
             await session.commitTransaction();
         } catch (error) {

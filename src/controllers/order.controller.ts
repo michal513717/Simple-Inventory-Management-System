@@ -30,7 +30,7 @@ export class OrderController {
                 return res.status(error.status).json(error.toJSON());
             }
 
-            internalServerErrorResponse(res);
+            return internalServerErrorResponse(res);
         }
     }
 }

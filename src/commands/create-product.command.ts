@@ -17,7 +17,7 @@ export class CreateProductCommand {
 
     public async execute(command: Product): Promise<Product> {
 
-        let event = new EventsCreator<ProductCreatedEvent>("ProductCreated", {
+        const event = new EventsCreator<ProductCreatedEvent>("ProductCreated", {
             productId: command.name,
             description: command.description,
             name: command.name,

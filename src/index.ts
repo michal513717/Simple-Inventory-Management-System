@@ -21,7 +21,6 @@ import { SellProductCommand } from './commands/sell-product.command';
 import { CreateOrderCommand } from './commands/create-order.command';
 import { OrderController } from './controllers/order.controller';
 import { EventStore } from './databases/eventStore';
-import { newProductValidator } from './utils/validators';
 
 dotenv.config();
 

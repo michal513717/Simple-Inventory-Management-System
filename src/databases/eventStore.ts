@@ -2,6 +2,9 @@ import { Low } from 'lowdb';
 import { JSONFile } from 'lowdb/node'
 import { EventStoreData, ProductEvent } from '../models/common.models';
 import { join } from 'path';
+import * as log4js from 'log4js';
+
+const logger = log4js.getLogger();
 
 export class EventStore {
     private db: Low<EventStoreData>;
@@ -19,7 +22,7 @@ export class EventStore {
             this.db.data ||= { events: [] };
             await this.db.write();
         } catch (error) {
-            console.error("Error initializing EventStore:", error);
+            logger.error("Error initializing EventStore:", error);
             throw error;
         }
     }
@@ -30,7 +33,7 @@ export class EventStore {
             this.db.data!.events.push(event);
             await this.db.write();
         } catch (error) {
-            console.error("Error appending event:", error);
+            logger.error("Error appending event:", error);
             throw error;
         }
     }
@@ -41,7 +44,7 @@ export class EventStore {
             if (!this.db.data) return [];
             return this.db.data.events.filter(event => (event as any).productId === aggregateId || (event as any).orderId === aggregateId);
         } catch (error) {
-            console.error("Error getting events:", error);
+            logger.error("Error getting events:", error);
             return [];
         }
     }
@@ -51,7 +54,7 @@ export class EventStore {
             await this.db.read();
             return this.db.data?.events || [];
         } catch (error) {
-            console.error("Error getting all events:", error);
+            logger.error("Error getting all events:", error);
             return [];
         }
     }

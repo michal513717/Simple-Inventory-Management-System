@@ -12,22 +12,22 @@ export abstract class ErrorWithCode extends Error {
             code: this.code
         }
     }
-}
+};
 
 export class ProductNotFoundError extends ErrorWithCode {
     constructor(){
         super("Product not found", 204, ERROR_CODES.PRODUCT_NOT_FOUND);
     }
-}
+};
 
 export class InsufficientStockError extends ErrorWithCode {
     constructor(){
         super("Insufficient stock", 404, ERROR_CODES.PRODUCT_NOT_FOUND);
     }
-}
+};
 
 export class ValidationError extends ErrorWithCode {
     constructor(){
         super("Insufficient stock", 403, ERROR_CODES.VALIDATION_ERROR);
     }
-}
+};

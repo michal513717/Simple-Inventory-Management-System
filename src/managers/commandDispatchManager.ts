@@ -10,7 +10,7 @@ class CommandDispatchManager {
     async dispatch<T extends Command>(command: T): Promise<void> {
         const handler = this.handlers.get(command.constructor.name);
         if (!handler) {
-            throw new Error(`No handler registered for command ${command.constructor.name}`); //TODO add custom error
+            throw new Error(`No handler registered for command ${command.constructor.name}`);
         }
         await handler.handle(command);
     }
