@@ -1,0 +1,103 @@
+{
+  "events": [
+    {
+      "type": "ProductCreated",
+      "error": null,
+      "timestamp": "2025-01-08T18:02:07.159Z",
+      "productId": "The Sims 2: FreeTime",
+      "description": "Expansion pack with new features and gameplay.",
+      "name": "The Sims 2: FreeTime",
+      "price": 199,
+      "stock": 5,
+      "status": "SUCCESS"
+    },
+    {
+      "type": "ProductCreated",
+      "error": null,
+      "timestamp": "2025-01-08T18:02:25.100Z",
+      "productId": "Cyberpunk 2077",
+      "description": "Open-world action RPG in a cyberpunk universe.",
+      "name": "Cyberpunk 2077",
+      "price": 349,
+      "stock": 2,
+      "status": "SUCCESS"
+    },
+    {
+      "type": "ProductCreated",
+      "error": null,
+      "timestamp": "2025-01-08T18:02:31.346Z",
+      "productId": "Hollow Knight",
+      "description": "2D Metroidvania with exploration and combat.",
+      "name": "Hollow Knight",
+      "price": 99,
+      "stock": 15,
+      "status": "SUCCESS"
+    },
+    {
+      "type": "ProductCreated",
+      "error": null,
+      "timestamp": "2025-01-08T18:02:35.301Z",
+      "productId": "Civilization VI",
+      "description": "Turn-based strategy where you build an empire.",
+      "name": "Civilization VI",
+      "price": 499,
+      "stock": 7,
+      "status": "SUCCESS"
+    },
+    {
+      "type": "ProductCreated",
+      "error": null,
+      "timestamp": "2025-01-08T18:02:39.228Z",
+      "productId": "Assetto Corsa Competizione",
+      "description": "Sim racing game with a realistic driving model.",
+      "name": "Assetto Corsa Competizione",
+      "price": 249,
+      "stock": 3,
+      "status": "SUCCESS"
+    },
+    {
+      "type": "ProductCreated",
+      "error": null,
+      "timestamp": "2025-01-08T18:02:44.708Z",
+      "productId": "Tetris Effect: Connected",
+      "description": "Puzzle game with falling Tetrominoes.",
+      "name": "Tetris Effect: Connected",
+      "price": 79,
+      "stock": 20,
+      "status": "SUCCESS"
+    },
+    {
+      "type": "ProductCreated",
+      "error": null,
+      "timestamp": "2025-01-08T18:02:48.441Z",
+      "productId": "Elden Ring",
+      "description": "Action RPG known for its challenging gameplay.",
+      "name": "Elden Ring",
+      "price": 399,
+      "stock": 8,
+      "status": "SUCCESS"
+    },
+    {
+      "type": "ProductCreated",
+      "error": null,
+      "timestamp": "2025-01-08T18:02:58.317Z",
+      "productId": "Subnautica",
+      "description": "Survival adventure on an alien ocean planet.",
+      "name": "Subnautica",
+      "price": 149,
+      "stock": 12,
+      "status": "SUCCESS"
+    },
+    {
+      "type": "ProductCreated",
+      "error": null,
+      "timestamp": "2025-01-08T18:03:03.690Z",
+      "productId": "Microsoft Flight Simulator",
+      "description": "Flight simulator with realistic graphics.",
+      "name": "Microsoft Flight Simulator",
+      "price": 599,
+      "stock": 1,
+      "status": "SUCCESS"
+    }
+  ]
+}
