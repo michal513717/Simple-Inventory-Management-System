@@ -8,6 +8,7 @@ import { EventStore } from '../databases/eventStore';
 import { EventsCreator } from '../utils/events';
 import { OrderCreatedEvent } from '../models/common.models';
 import { ProductReadRepository } from '../repositories/product-read.repository';
+import { ProductReadMongoRepository } from '../repositories/product-read.mongo.repository';
 
 /**
  * @fileOverview CreateOrderCommandHandler - manages order creation, product stock levels and event logging.
