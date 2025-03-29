@@ -1,5 +1,6 @@
 import { EventStore } from '../databases/eventStore';
 import { ProductSoldEvent } from '../models/common.models';
+import { ProductReadMongoRepository } from '../repositories/product-read.mongo.repository';
 import { ProductReadRepository } from '../repositories/product-read.repository';
 import { ProductRepository } from '../repositories/product.repository';
 import { InsufficientStockError, ProductNotFoundError } from '../utils/errorsWithCode';
@@ -14,14 +15,14 @@ import mongoose from 'mongoose';
  * @class
  * @param {ProductRepository} productRepository - Repository for managing products
  * @param {EventStore} eventStore - Event store for logging events
- * @param {ProductReadRepository} productReadRepository - Read repository for managing product stock levels
+ * @param {ProductReadRepository | ProductReadMongoRepository} productReadRepository - Read repository for managing product stock levels
  */
 
 export class SellProductCommandHandler {
     constructor(
         private productRepository: ProductRepository,
         private eventStore: EventStore,
-        private productReadRepository: ProductReadRepository
+        private productReadRepository: ProductReadRepository | ProductReadMongoRepository
     ) { }
 
     public async handle(command: SellProductCommand): Promise<void> {

@@ -17,7 +17,7 @@ import { ProductReadRepository } from '../repositories/product-read.repository';
  * @param {ProductRepository} productRepository - repository for managing products
  * @param {OrderRepository} orderRepository - repository for managing orders
  * @param {EventStore} eventStore - event store for logging events
- * @param {ProductReadRepository} productReadRepository - read repository for managing product stock levels
+ * @param {ProductReadRepository | ProductReadMongoRepository} productReadRepository - read repository for managing product stock levels
  */
 
 export class CreateOrderCommandHandler {
@@ -25,7 +25,7 @@ export class CreateOrderCommandHandler {
         private productRepository: ProductRepository,
         private orderRepository: OrderRepository,
         private eventStore: EventStore,
-        private productReadRepository: ProductReadRepository
+        private productReadRepository: ProductReadRepository | ProductReadMongoRepository 
     ) { }
 
     async handle(command: CreateOrderCommand): Promise<void> {

@@ -12,7 +12,7 @@ import { ProductCreatedEvent } from '../models/common.models';
  * @author Michał Kuś
  * @class
  * @param {ProductRepository} productRepository - Repository for managing products
- * @param {ProductReadRepository} productReadRepository - Read repository for managing product stock levels
+ * @param {ProductReadRepository | ProductReadMongoRepository} productReadRepository - Read repository for managing product stock levels
  * @param {EventStore} eventStore - Event store for logging events
  */
 
@@ -21,7 +21,7 @@ const logger = log4js.getLogger();
 export class CreateProductCommand {
     constructor(
         private productRepository: ProductRepository,
-        private productReadRepository: ProductReadRepository,
+        private productReadRepository: ProductReadRepository | ProductReadMongoRepository,
         private eventStore: EventStore
     ) { }
 
