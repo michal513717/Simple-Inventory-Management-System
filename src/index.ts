@@ -21,11 +21,13 @@ import { SellProductCommand } from './commands/sell-product.command';
 import { CreateOrderCommand } from './commands/create-order.command';
 import { OrderController } from './controllers/order.controller';
 import { EventStore } from './databases/eventStore';
+import { CreateProductCommandHandler } from './commands/create-product.handler';
+import { ProductReadMongoRepository } from './repositories/product-read.mongo.repository';
 
 dotenv.config();
 
 const app = express();
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 3001;
 const mongoUri = process.env.MONGO_URI || '';
 const elasticSearchCloudId = process.env.ELASTICSEARCH_CLOUD_ID || '';
 const elasticSearchId = process.env.ELASTICSEARCH_ID || '';
@@ -50,21 +52,22 @@ async function main() {
         const productRepository = new ProductRepository();
         const orderRepository = new OrderRepository();
         const productReadRepository = new ProductReadRepository(elasticSearchClient);
+        const productReadMongoRepository = new ProductReadMongoRepository();
 
         const getProductsQuery = new GetProductsQuery(productReadRepository);
-        
-        const createProductCommand = new CreateProductCommand(productRepository, productReadRepository, eventStore);
-        
+                
         const sellProductCommandHandler = new SellProductCommandHandler(productRepository, eventStore, productReadRepository);
         const createOrderCommandHandler = new CreateOrderCommandHandler(productRepository, orderRepository, eventStore, productReadRepository);
         const restockProductCommandHandler = new RestockProductCommandHandler(productRepository, eventStore, productReadRepository);
+        const createProductCommandHandler = new CreateProductCommandHandler(productRepository, productReadMongoRepository, eventStore);
 
         const orderController = new OrderController();
-        const productController = new ProductController(createProductCommand, getProductsQuery);
+        const productController = new ProductController(getProductsQuery);
 
         commandDispatchManager.registerHandler(RestockProductCommand.name, restockProductCommandHandler);
         commandDispatchManager.registerHandler(SellProductCommand.name, sellProductCommandHandler);
         commandDispatchManager.registerHandler(CreateOrderCommand.name, createOrderCommandHandler);
+        commandDispatchManager.registerHandler(CreateProductCommand.name, createProductCommandHandler);
 
         if(APPLICATION_CONFIG.DEBUG_REQUEST === true){ 
             debugRequest(app);

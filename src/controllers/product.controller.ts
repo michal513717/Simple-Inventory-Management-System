@@ -20,7 +20,7 @@ import { ErrorWithCode, ValidationError } from '../utils/errorsWithCode';
 
 export class ProductController {
     constructor(
-        private createProductCommand: CreateProductCommand,
+        // private createProductCommand: CreateProductCommand,
         private getProductsQuery: GetProductsQuery
     ) { }
 
@@ -32,7 +32,10 @@ export class ProductController {
                 throw new ValidationError();
             }
 
-            const product = await this.createProductCommand.execute(req.body);
+
+            const product = await commandDispatchManager.dispatch(new CreateProductCommand(req.body.name, req.body.description, req.body.name, req.body.price, req.body.stock));
+
+            // const product = await this.createProductCommand.execute(req.body);
             res.status(201).json({ result: { message: "Success", product } });
         } catch (error: any) {
 
