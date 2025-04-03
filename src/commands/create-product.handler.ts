@@ -1,11 +1,9 @@
 import { Product } from '../models/mongoSchemas';
-import { ProductRepository } from '../repositories/product.repository';
-import { ProductReadRepository } from "../repositories/product-read.repository";
+import { ProductUpdateRepository } from '../repositories/product-update.repository';
 import * as log4js from 'log4js';
 import { EventStore } from '../databases/eventStore';
 import { EventsCreator } from '../utils/events';
 import { ProductCreatedEvent } from '../models/common.models';
-import { ProductReadMongoRepository } from '../repositories/product-read.mongo.repository';
 import { ProductDoenstHaveId } from '../utils/errorsWithCode';
 
 /**
@@ -13,8 +11,7 @@ import { ProductDoenstHaveId } from '../utils/errorsWithCode';
  * 
  * @author Michał Kuś
  * @class
- * @param {ProductRepository} productRepository - Repository for managing products
- * @param {ProductReadRepository | ProductReadMongoRepository} productReadRepository - Read repository for managing product stock levels
+ * @param {ProductUpdateRepository} productUpdateRepository - Repository for managing products
  * @param {EventStore} eventStore - Event store for logging events
  */
 
@@ -22,8 +19,7 @@ const logger = log4js.getLogger();
 
 export class CreateProductCommandHandler {
     constructor(
-        private productRepository: ProductRepository,
-        private productReadRepository: ProductReadRepository | ProductReadMongoRepository,
+        private productUpdateRepository: ProductUpdateRepository,
         private eventStore: EventStore
     ) { }
 
@@ -38,7 +34,7 @@ export class CreateProductCommandHandler {
         }).create();
 
         try {
-            const createdProduct = await this.productRepository.create(command);
+            const createdProduct = await this.productUpdateRepository.create(command);
             
             if(!createdProduct._id){
                 throw new ProductDoenstHaveId();

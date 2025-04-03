@@ -6,7 +6,7 @@ import { getElasticSearchClient } from './databases/elasticSearch';
 import { configureLogger } from './utils/logger';
 import { configureNotValidRoute, debugRequest } from './utils/requests';
 import { APPLICATION_CONFIG } from './utils/applicationConfig';
-import { ProductRepository } from './repositories/product.repository';
+import { ProductUpdateRepository } from './repositories/product-update.repository';
 import { ProductReadRepository } from './repositories/product-read.repository';
 import { CreateProductCommand } from './commands/create-product.command';
 import { GetProductsQuery } from './queries/get-product.query';
@@ -49,7 +49,7 @@ async function main() {
         const mongoClient = await getMongoClient(mongoUri);
         const eventStore = new EventStore('events.json');
 
-        const productRepository = new ProductRepository();
+        const productRepository = new ProductUpdateRepository();
         const orderRepository = new OrderRepository();
         const productReadRepository = new ProductReadRepository(elasticSearchClient);
         const productReadMongoRepository = new ProductReadMongoRepository();
@@ -59,7 +59,7 @@ async function main() {
         const sellProductCommandHandler = new SellProductCommandHandler(productRepository, eventStore, productReadRepository);
         const createOrderCommandHandler = new CreateOrderCommandHandler(productRepository, orderRepository, eventStore, productReadRepository);
         const restockProductCommandHandler = new RestockProductCommandHandler(productRepository, eventStore, productReadRepository);
-        const createProductCommandHandler = new CreateProductCommandHandler(productRepository, productReadMongoRepository, eventStore);
+        const createProductCommandHandler = new CreateProductCommandHandler(productRepository, eventStore);
 
         const orderController = new OrderController();
         const productController = new ProductController(getProductsQuery);

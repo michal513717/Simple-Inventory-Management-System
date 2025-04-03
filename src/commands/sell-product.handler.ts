@@ -2,7 +2,7 @@ import { EventStore } from '../databases/eventStore';
 import { ProductSoldEvent } from '../models/common.models';
 import { ProductReadMongoRepository } from '../repositories/product-read.mongo.repository';
 import { ProductReadRepository } from '../repositories/product-read.repository';
-import { ProductRepository } from '../repositories/product.repository';
+import { ProductRepository } from '../repositories/product-update.repository';
 import { InsufficientStockError, ProductNotFoundError } from '../utils/errorsWithCode';
 import { EventsCreator } from '../utils/events';
 import { SellProductCommand } from './sell-product.command';

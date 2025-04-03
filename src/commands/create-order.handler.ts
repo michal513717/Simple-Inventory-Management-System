@@ -1,5 +1,5 @@
 import { Order } from '../models/mongoSchemas';
-import { ProductRepository } from '../repositories/product.repository';
+import { ProductUpdateRepository } from '../repositories/product-update.repository';
 import { OrderRepository } from '../repositories/order.repository';
 import mongoose from 'mongoose';
 import { CreateOrderCommand } from './create-order.command';
@@ -23,7 +23,7 @@ import { ProductReadMongoRepository } from '../repositories/product-read.mongo.r
 
 export class CreateOrderCommandHandler {
     constructor(
-        private productRepository: ProductRepository,
+        private productUpdateRepository: ProductUpdateRepository,
         private orderRepository: OrderRepository,
         private eventStore: EventStore,
         private productReadRepository: ProductReadRepository | ProductReadMongoRepository 
@@ -36,7 +36,7 @@ export class CreateOrderCommandHandler {
         try {
             const productsToDecrease = [];
             for (const productInfo of command.products) {
-                const product = await this.productRepository.findById(productInfo.productId);
+                const product = await this.productUpdateRepository.findById(productInfo.productId);
                 
                 if (!product) {
                     throw new ProductNotFoundError();
@@ -50,7 +50,7 @@ export class CreateOrderCommandHandler {
 
                 productsToDecrease.push({ id: product._id.toString(), quantity: product.stock });
 
-                await this.productRepository.update(product, session);
+                await this.productUpdateRepository.update(product, session);
             }
 
             //TODO FIX TYPES
@@ -63,9 +63,10 @@ export class CreateOrderCommandHandler {
 
             await this.orderRepository.create(orderData, session);
 
-            for(const productInfo of productsToDecrease){
-                this.productReadRepository.updateStock(productInfo.id, productInfo.quantity);
-            }
+            // It was a elastic search, so we need to update the stock in the read repository as well
+            // for(const productInfo of productsToDecrease){
+                // this.productReadRepository.updateStock(productInfo.id, productInfo.quantity);
+            // }
 
             await session.commitTransaction();
             session.endSession();
