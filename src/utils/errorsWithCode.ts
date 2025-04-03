@@ -43,3 +43,9 @@ export class ValidationError extends ErrorWithCode {
         super("Insufficient stock", 403, ERROR_CODES.VALIDATION_ERROR);
     }
 };
+
+export class ProductDoenstHaveId extends ErrorWithCode {
+    constructor(){
+        super("Product doesn't have id", 403, ERROR_CODES.PRODUCT_DOESNT_HAVE_ID);
+    }
+}
