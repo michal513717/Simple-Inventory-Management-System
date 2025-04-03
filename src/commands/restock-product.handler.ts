@@ -1,12 +1,10 @@
-import { ProductReadRepository } from "../repositories/product-read.repository";
-import { ProductRepository } from "../repositories/product.repository";
+import { ProductUpdateRepository } from "../repositories/product-update.repository";
 import mongoose from "mongoose";
 import { RestockProductCommand } from "./restock-product.command";
 import { ProductNotFoundError } from "../utils/errorsWithCode";
 import { EventStore } from "../databases/eventStore";
 import { ProductRestockedEvent } from "../models/common.models";
 import { EventsCreator } from "../utils/events";
-import { ProductReadMongoRepository } from "../repositories/product-read.mongo.repository";
 
 /**
  * @fileOverview RestockProductCommandHandler - Handles restocking products, managing stock levels, and logging events.
@@ -20,9 +18,8 @@ import { ProductReadMongoRepository } from "../repositories/product-read.mongo.r
 
 export class RestockProductCommandHandler {
     constructor(
-        private productRepository: ProductRepository,
+        private productUpdateRepository: ProductUpdateRepository,
         private eventStore: EventStore,
-        private productReadRepository: ProductReadRepository | ProductReadMongoRepository
     ) { }
 
     public async handle(command: RestockProductCommand): Promise<void> {
@@ -34,7 +31,7 @@ export class RestockProductCommandHandler {
         const event = new EventsCreator<ProductRestockedEvent>("ProductRestocked", command).create();
 
         try {
-            const product = await this.productRepository.findById(command.productId);
+            const product = await this.productUpdateRepository.findById(command.productId);
 
             if (!product) {
                 throw new ProductNotFoundError();
@@ -42,9 +39,10 @@ export class RestockProductCommandHandler {
 
             product.stock += command.quantity;
 
-            await this.productRepository.update(product, session);
+            await this.productUpdateRepository.update(product, session);
 
-            this.productReadRepository.updateStock(product._id.toString(), product.stock);
+            // It was a elastic search index, but now we are using MongoDB Atlas Search
+            // this.productReadRepository.updateStock(product._id.toString(), product.stock);
 
             await session.commitTransaction();
         } catch (error) {

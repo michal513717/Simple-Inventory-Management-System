@@ -1,5 +1,5 @@
 import { Order } from '../models/mongoSchemas';
-import { ProductRepository } from '../repositories/product.repository';
+import { ProductUpdateRepository } from '../repositories/product-update.repository';
 import { OrderRepository } from '../repositories/order.repository';
 import mongoose from 'mongoose';
 import { CreateOrderCommand } from './create-order.command';
@@ -7,8 +7,6 @@ import { InsufficientStockError, ProductNotFoundError } from '../utils/errorsWit
 import { EventStore } from '../databases/eventStore';
 import { EventsCreator } from '../utils/events';
 import { OrderCreatedEvent } from '../models/common.models';
-import { ProductReadRepository } from '../repositories/product-read.repository';
-import { ProductReadMongoRepository } from '../repositories/product-read.mongo.repository';
 
 /**
  * @fileOverview CreateOrderCommandHandler - manages order creation, product stock levels and event logging.
@@ -18,15 +16,13 @@ import { ProductReadMongoRepository } from '../repositories/product-read.mongo.r
  * @param {ProductRepository} productRepository - repository for managing products
  * @param {OrderRepository} orderRepository - repository for managing orders
  * @param {EventStore} eventStore - event store for logging events
- * @param {ProductReadRepository | ProductReadMongoRepository} productReadRepository - read repository for managing product stock levels
  */
 
 export class CreateOrderCommandHandler {
     constructor(
-        private productRepository: ProductRepository,
+        private productUpdateRepository: ProductUpdateRepository,
         private orderRepository: OrderRepository,
         private eventStore: EventStore,
-        private productReadRepository: ProductReadRepository | ProductReadMongoRepository 
     ) { }
 
     async handle(command: CreateOrderCommand): Promise<void> {
@@ -36,7 +32,7 @@ export class CreateOrderCommandHandler {
         try {
             const productsToDecrease = [];
             for (const productInfo of command.products) {
-                const product = await this.productRepository.findById(productInfo.productId);
+                const product = await this.productUpdateRepository.findById(productInfo.productId);
                 
                 if (!product) {
                     throw new ProductNotFoundError();
@@ -50,7 +46,7 @@ export class CreateOrderCommandHandler {
 
                 productsToDecrease.push({ id: product._id.toString(), quantity: product.stock });
 
-                await this.productRepository.update(product, session);
+                await this.productUpdateRepository.update(product, session);
             }
 
             //TODO FIX TYPES
@@ -63,9 +59,10 @@ export class CreateOrderCommandHandler {
 
             await this.orderRepository.create(orderData, session);
 
-            for(const productInfo of productsToDecrease){
-                this.productReadRepository.updateStock(productInfo.id, productInfo.quantity);
-            }
+            // It was a elastic search, so we need to update the stock in the read repository as well
+            // for(const productInfo of productsToDecrease){
+                // this.productReadRepository.updateStock(productInfo.id, productInfo.quantity);
+            // }
 
             await session.commitTransaction();
             session.endSession();
