@@ -1,4 +1,3 @@
-import { ProductReadRepository } from "../repositories/product-read.repository";
 import { ProductUpdateRepository } from "../repositories/product-update.repository";
 import mongoose from "mongoose";
 import { RestockProductCommand } from "./restock-product.command";
@@ -6,7 +5,6 @@ import { ProductNotFoundError } from "../utils/errorsWithCode";
 import { EventStore } from "../databases/eventStore";
 import { ProductRestockedEvent } from "../models/common.models";
 import { EventsCreator } from "../utils/events";
-import { ProductReadMongoRepository } from "../repositories/product-read.mongo.repository";
 
 /**
  * @fileOverview RestockProductCommandHandler - Handles restocking products, managing stock levels, and logging events.
@@ -22,7 +20,6 @@ export class RestockProductCommandHandler {
     constructor(
         private productUpdateRepository: ProductUpdateRepository,
         private eventStore: EventStore,
-        private productReadRepository: ProductReadRepository | ProductReadMongoRepository
     ) { }
 
     public async handle(command: RestockProductCommand): Promise<void> {
