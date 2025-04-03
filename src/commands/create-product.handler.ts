@@ -27,11 +27,7 @@ export class CreateProductCommandHandler {
         private eventStore: EventStore
     ) { }
 
-    public handle(command: Product): Promise<any> {
-        return ''
-    }
-
-    public async execute(command: Product): Promise<Product> {
+    public async handle(command: Product): Promise<any> {
 
         const event = new EventsCreator<ProductCreatedEvent>("ProductCreated", {
             productId: command.name,
@@ -48,18 +44,8 @@ export class CreateProductCommandHandler {
                 throw new ProductDoenstHaveId();
             }
 
-            if (createdProduct._id) {
-                await this.productReadRepository.index(createdProduct);
-                return createdProduct;
-            }
-
             throw new Error("Error during creating product");
         } catch (error) {
-
-            if(error instanceof ProductDoenstHaveId) {
-                logger.error("Error during creating product: Missing _id after saving to MongoDB");
-            }
-
             logger.error("Error during creating product:", error);
             event.status = "FAILED";
             event.error = error;
@@ -68,4 +54,42 @@ export class CreateProductCommandHandler {
             this.eventStore.append(event);
         }
     }
+
+    // public async execute(command: Product): Promise<Product> {
+
+    //     const event = new EventsCreator<ProductCreatedEvent>("ProductCreated", {
+    //         productId: command.name,
+    //         description: command.description,
+    //         name: command.name,
+    //         price: command.price,
+    //         stock: command.stock
+    //     }).create();
+
+    //     try {
+    //         const createdProduct = await this.productRepository.create(command);
+            
+    //         if(!createdProduct._id){
+    //             throw new ProductDoenstHaveId();
+    //         }
+
+    //         if (createdProduct._id) {
+    //             await this.productReadRepository.index(createdProduct);
+    //             return createdProduct;
+    //         }
+
+    //         throw new Error("Error during creating product");
+    //     } catch (error) {
+
+    //         if(error instanceof ProductDoenstHaveId) {
+    //             logger.error("Error during creating product: Missing _id after saving to MongoDB");
+    //         }
+
+    //         logger.error("Error during creating product:", error);
+    //         event.status = "FAILED";
+    //         event.error = error;
+    //         throw error;
+    //     } finally {
+    //         this.eventStore.append(event);
+    //     }
+    // }
 }
