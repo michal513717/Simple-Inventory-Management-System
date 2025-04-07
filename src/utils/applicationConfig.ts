@@ -1,3 +1,4 @@
 export const APPLICATION_CONFIG = {
   DEBUG_REQUEST: true,
+  APPLY_AUTH_MIDDLEWARE: true,
 }
