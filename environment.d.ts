@@ -6,6 +6,7 @@ declare global {
             ELASTICSEARCH_CLOUD_ID: string;
             MONGODB_URI: string;
             MONGODB_DB_NAME: string;
+            JWT_SECRET: string;
         }
     }
 }
